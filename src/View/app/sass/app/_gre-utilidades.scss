@@ -1,0 +1,44 @@
+@mixin border-radius($border) {
+	-webkit-border-radius: $border;
+	-moz-border-radius: $border;
+	-ms-border-radius: $border;
+	-o-border-radius: $border;
+	border-radius: $border;
+}
+@mixin calc-width($expressao) {
+	width: -webkit-calc(#{$expressao});
+	width: -moz-calc(#{$expressao});
+	width: -ms-calc(#{$expressao});
+	width: -o-calc(#{$expressao});
+	width: calc(#{$expressao});
+}
+
+.clearfix {@include clearfix}
+.img-responsive {@include img-responsive}
+.list-unstyled {list-style: none}
+.pull-right {float: right}
+.pull-left {float: left}
+.visivel {display: block !important}
+%center {@include center-block}
+
+input[type='text']:focus,
+input[type='number']:focus,
+textarea:focus {
+	font-size: 16px;
+}
+input[type="search"] {
+	&::-webkit-search-decoration,
+	&::-webkit-search-cancel-button,
+	&::-webkit-search-results-button,
+	&::-webkit-search-results-decoration {display: none}
+	&::-ms-clear {display: none}
+}
+
+/* disable auto-zoom on iphone input field focus */
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	select:focus,
+	textarea:focus,
+	input:focus {
+	    font-size: 16px;
+	}
+}

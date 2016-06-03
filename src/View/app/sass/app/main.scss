@@ -1,0 +1,292 @@
+/* Bootstrap */
+@import "../vendor/bootstrap/variables";
+@import "../vendor/bootstrap/mixins";
+@import "../vendor/bootstrap/buttons";
+@import "../vendor/bootstrap/forms";
+@import "../vendor/bootstrap/navbar";
+@import "../vendor/bootstrap/responsive-utilities";
+@import "../vendor/fontawesome/variables";
+@import "../vendor/fontawesome/path";
+@import "../vendor/fontawesome/icons";
+
+/* Cliente UP */
+@import "gre-variaveis";
+@import "gre-utilidades";
+
+body {
+	font-family: 'Roboto', 'FontAwesome', sans-serif, serif !important;
+	padding: 0;
+	margin: 0;
+	background-color: $gre-body-bgcolor;
+}
+header .form-group {margin-top: 30px}
+.logo {
+	@extend %center;
+	margin-top: 40px;
+	margin-bottom: 40px;
+}
+.btn {
+	width: 100%;
+	margin-bottom: $gre-botao-gutter;
+	font-size: $gre-botao-fonttamanho;
+	&.btn-primary {
+		background-color: $btn-primary-cor;
+		border-color: $btn-primary-borda;
+		&:hover, &:active, &:focus {
+			background-color: $btn-primary-cor-hover;
+			border-color: $btn-primary-borda-hover;
+		}
+	}
+	&.btn-default {
+		background-color: $btn-default-cor;
+		border-color: $btn-default-borda;
+		color: $btn-default-borda;
+		&:hover, &:active, &:focus {
+			background-color: $btn-default-cor-hover;
+			border-color: $btn-default-borda-hover;
+		}
+	}
+	&.btn-busca {
+		@extend .btn-success !optional;
+		background-color: #689F39;
+		font-size: 1.5em;
+		min-height: 50px;
+	}
+}
+.campo-busca {
+	@extend .form-control !optional;
+	@include box-shadow(0px 2px 6px #A5A5A5);
+	@include border-radius(0px);
+	min-height: 50px;
+	margin-bottom: 15px;
+	&:focus {
+		border-color: #ccc;
+		@extend .campo-busca;
+	}
+}
+.lista-sugestao {
+	@extend .list-unstyled;
+	@extend .campo-busca;
+	@include calc-width("100% - 30px");
+	@include box-shadow(0px 3px 2px #A5A5A5);
+	height: auto;
+	border-top: 0px;
+	padding: 0 !important;
+	position: absolute;
+	z-index: 1;
+	top: 35px;
+	display: none;
+	& .sugestao-item {
+		width: 100%;
+		height: 45px;
+		& > .sugestao-link {
+			width: 100%;
+			height: 100%;
+			display: block;
+			font-weight: bold;
+			text-decoration: none;
+			color: $a-cor;
+			padding: 15px;
+			&:hover, &:focus {
+				color: #fff;
+				background-color: $btn-primary-cor;
+			}
+		}
+	}
+}
+.has-feedback {
+	& .campo-busca {padding-left: 35px}
+	& .form-group-feedback, & .fa-close {
+		top: 18px;
+		position: absolute;
+	}
+	&.has-feedback-left .form-group-feedback {left: 28px}
+	&.has-feedback-right .form-group-feedback,
+	& .fa-close {
+		text-decoration: none;
+		color: $a-cor;
+		right: 28px;
+		cursor: pointer;
+	}
+}
+.navbar {
+	& .navbar-collapse {
+		padding-top: 8px;
+		overflow-y: auto;
+	}
+	& .menu {
+		margin-bottom: 8px;
+		@extend .list-unstyled;
+		& > a {
+			word-break: keep-all;
+			word-wrap: break-word;
+			text-decoration: none;
+			color: $a-cor;
+			& > .fa {
+				width: 30px;
+				padding-right: 10px;
+				padding-right: 8px;
+				font-size: 18px;
+				text-align: center;
+				display: inline-block;
+			}
+		}
+	}
+}
+.navbar-collapse {&.in {display: none}}
+.fa-close {@extend .navbar-collapse.in}
+.lista-grupo {
+	@extend .row !optional;
+	width: 82%;
+	margin: 15px auto;
+	& .lista-empresa {
+		max-width: 360px;
+		max-height: 400px;
+		margin-right: 15px;
+		padding: 15px;
+		border: 1px solid #e3e3e3;
+		margin-bottom: 15px;
+		@include box-shadow(1px 1px 4px #e2e2e2);
+		@extend .pull-left;
+		& .lista-imagem {
+			@extend .img-responsive !optional;
+			@extend %center;
+		}
+		& .lista-titulo {
+			margin: 10px 0px 10px 0px;
+			font-weight: 600;
+		}
+		& .redes-sociais {
+			width: 40px;
+			height: 40px;
+			padding-top: 5px;
+			font-size: 1.8em;
+			text-decoration: none;
+			text-align: center;
+			display: block;
+			@extend .pull-left;
+			@include border-radius(5px);
+			&.facebook {
+				@extend .fa !optional;
+				@extend .fa-facebook !optional;
+				background-color: #3B5999;
+				color: white;
+				&:hover {
+					background-color: #46629E;
+				}
+			}
+		}
+		& .btn-primary {
+			width: auto;
+			@extend .pull-right;
+		}
+	}
+}
+#footer {
+	.clearfix {
+		&::after, &::before {
+			content: '';
+			display: none;
+		}
+	}
+	& .barra-topo {
+		height: 35px;
+		background-color: #C2E8F5;
+		margin-bottom: -15px;
+	}
+	footer {
+		margin-bottom: 30px;
+		& .footer-grupo {
+			@extend .row !optional;
+		}
+		& .topo {
+			@extend .fa !optional;
+			@extend .fa-chevron-up !optional;
+			@include border-radius(30px 30px 0px 0px);
+			width: 50px;
+		    height: 33px;
+			font-size: 2em;
+		    text-align: center;
+		    text-decoration: none;
+		    font-weight: lighter;
+		    color: #C2E8F5;
+		    left: 0px;
+		    top: -17px;
+		    position: relative;
+		    background-color: #fff;
+		    margin: auto;
+		    display: block;
+		}
+		& .footer-lista {
+			@extend .col-lg-3 !optional;
+			@extend .col-md-3 !optional;
+			@extend .col-sm-6 !optional;
+			@extend .col-xs-6 !optional;
+			@extend .list-unstyled;
+			& .footer-lista-item {
+				& > h2 {
+					font-size: 1.3em;
+					color: $h2-cor;
+				}
+				& > a {
+					font-size: 1em;
+					text-decoration: none;
+					color: $a-cor;
+				}
+			}
+		}
+	}
+	& .barra-rodape {
+		background-color: #F5F5F5;
+		height: 150px;
+		& .redes-sociais {
+			width: 40px;
+			height: 40px;
+			margin-top: 55px;
+			padding-top: 4px;
+			font-size: 1.8em;
+			text-decoration: none;
+			text-align: center;
+			display: block;
+			@include border-radius(50px);
+			border: 1px solid #A7A7A7;
+			color: #444;
+			background-color: transparent;
+			margin-right: 10px;
+			@extend .pull-left;
+			&.facebook {
+				@extend .fa !optional;
+				@extend .fa-facebook !optional;
+			}
+			&.twitter {
+				@extend .fa !optional;
+				@extend .fa-twitter !optional;
+			}
+			&.youtube {
+				@extend .fa !optional;
+				@extend .fa-youtube !optional;
+			}
+			&.instagram {
+				@extend .fa !optional;
+				@extend .fa-instagram !optional;
+			}
+		}
+	}
+}
+#outros-menu {
+	background: url($bg-path) repeat-x;
+	height: 100%;
+	& .navbar {
+		margin: 0;
+		height: 161px;
+		background-color: #fff;
+	}
+	& .nav {
+		padding: 10px 10px 10px 20px;
+		@extend .list-unstyled;
+		& .menu {
+			margin-bottom: 15px;
+		}
+	}
+}
+@import "gre-breakpoints";

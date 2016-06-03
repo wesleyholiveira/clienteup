@@ -1,0 +1,5 @@
+.git
+composer.lock
+vendor/*
+src/View/app/.sass-cache
+src/View/app/node_modules/*
