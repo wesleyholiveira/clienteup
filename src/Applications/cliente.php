@@ -1,0 +1,91 @@
+<?php
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use ClienteUp\Lib\JWT;
+use Silex\Application;
+
+$app->get('/cliente', function(Application $app) use ($em) {
+
+	$todosClientes = $em->getRepository($app['clienteNamespace'])->findAll();
+	return new Response($app['serializer']->serialize($todosClientes, 'json'), 200);
+
+});
+
+$app->get('/cliente/{id}', function(Application $app, int $id) use ($em) {
+
+	$cliente = $em->getRepository($app['clienteNamespace'])->findById($id);
+	return new Response($app['serializer']->serialize($cliente, 'json'), 200);
+
+});
+
+$app->post('/cliente', function(Application $app, Request $req) use ($em) {
+
+	$nome = $req->get('nome');
+	$cpf = $req->get('CPF');
+	$endereco = $req->get('endereco');
+	$cidade = $req->get('cidade');
+	$cep = $req->get('CEP');
+	$telefone = $req->get('telefone');
+	$dataNascimento = $req->get('dataNascimento');
+	$email = $req->get('email');
+	$usuario = $req->get('usuario');
+	$senha = $req->get('senha');
+
+	try {
+		$cliente = $app['cliente'];
+		$cliente->setNomeCompleto($nome);
+		$cliente->setEndereco($endereco);
+		$cliente->setCidade($cidade);
+		$cliente->setCpf($cpf);
+		$cliente->setCep($cep);
+		$cliente->setTelefone($telefone);
+		$cliente->setDataNascimento($dataNascimento);
+		$cliente->setEmail($email);
+		$cliente->setUsuario($usuario);
+		$cliente->setSenha($senha, $app['key']);
+		$em->persist($cliente);
+		$em->flush();
+		return $app->json(['mensagem' => 'ok'], 200);
+	} catch(UniqueConstraintViolationException $e) {
+		return $app->json(['mensagem' => 'os campos CPF/Usuário/Email podem já estar cadastrados.'], 400);
+	}
+
+});
+
+$app->post('/cliente/pesquisa', function(Application $app, Request $req) use ($em) {
+
+	$token = JWT::getToken($req->headers->get('x-authorization'));
+	
+	$anuncio = $req->get('anuncio');
+	$radio = $req->get('radio');
+	$revista = $req->get('revista');
+	$compras = $req->get('compras');
+	$lojas = (array)json_decode($req->get('lojas'));
+	$pagamento = $req->get('pagamento');
+	$cliente = unserialize($token->getClaim('Cliente'));
+
+	foreach($lojas as $key => $loja) {
+		if($loja === true) {
+			$lojas[$key] = $key;
+		}
+	}
+
+	try {
+		$pesquisa = $app['pesquisa'];
+		$pesquisa->setCliente($cliente);
+		$pesquisa->setAnuncio($anuncio);
+		$pesquisa->setRadio($radio);
+		$pesquisa->setRevista($revista);
+		$pesquisa->setCompra($compras);
+		$pesquisa->setOpcoes($lojas);
+		$pesquisa->setPagamento($pagamento);
+		$em->merge($pesquisa);
+		$em->flush();
+		return $app->json(['mensagem' => 'ok'], 200);
+	} catch(UniqueConstraintViolationException $e) {
+		return $app->json(['mensagem' => 'Você já realizou a pesquisa.'], 400);
+	}
+
+});

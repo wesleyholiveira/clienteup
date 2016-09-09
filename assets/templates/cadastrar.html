@@ -1,0 +1,112 @@
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-12">
+				<h1 class="a-cor">Cadastre-se grátis!</h1>
+				<form name="formularioCadastro" class="formulario-cadastro" method="POST">
+					<div ng-show="formularioCadastro.nome.$error.required && formularioCadastro.nome.$dirty" class="alert alert-danger">
+						Preencha o campo nome.
+					</div>
+					<div ng-show="formularioCadastro.nome.$error.minlength && formularioCadastro.nome.$dirty" class="alert alert-danger">
+						O campo nome deve possuir no mínimo 10 caracteres.
+					</div>
+					<div ng-show="formularioCadastro.cpf.$error.required && formularioCadastro.cpf.$dirty" class="alert alert-danger">
+						Preencha o campo CPF.
+					</div>
+					<div ng-show="formularioCadastro.cpf.$error.pattern && formularioCadastro.cpf.$dirty" class="alert alert-danger">
+						Preencha o campo CPF no formato: 000.000.000-00
+					</div>
+					<div ng-show="formularioCadastro.endereco.$error.required && formularioCadastro.endereco.$dirty" class="alert alert-danger">
+						Preencha o campo endereço.
+					</div>
+					<div ng-show="formularioCadastro.endereco.$error.minlength && formularioCadastro.endereco.$dirty" class="alert alert-danger">
+						O campo endereço deve ter no mínimo 8 caracteres.
+					</div>
+					<div ng-show="formularioCadastro.cidade.$error.required && formularioCadastro.cidade.$dirty" class="alert alert-danger">
+						Preencha o campo cidade.
+					</div>
+					<div ng-show="formularioCadastro.cidade.$error.minlength && formularioCadastro.cidade.$dirty" class="alert alert-danger">
+						O campo cidade deve possuir no mínimo 8 caracteres.
+					</div>
+					<div ng-show="formularioCadastro.cep.$error.required && formularioCadastro.cep.$dirty" class="alert alert-danger">
+						Preencha o campo CEP.
+					</div>
+					<div ng-show="formularioCadastro.cep.$error.pattern && formularioCadastro.cep.$dirty" class="alert alert-danger">
+						O campo CEP deve possuir o formato: 0000-000
+					</div>
+					<div ng-show="formularioCadastro.telefone.$error.required && formularioCadastro.telefone.$dirty" class="alert alert-danger">
+						Preencha o campo telefone.
+					</div>
+					<div ng-show="formularioCadastro.telefone.$error.pattern && formularioCadastro.telefone.$dirty" class="alert alert-danger">
+						O campo telefone deve possuir o formato: (00) 00000-0000
+					</div>
+					<div ng-show="formularioCadastro.data.$error.required && formularioCadastro.data.$dirty" class="alert alert-danger">
+						Preencha o campo data de nascimento.
+					</div>
+					<div ng-show="formularioCadastro.email.$error.required && formularioCadastro.email.$dirty" class="alert alert-danger">
+						Preencha o campo email.
+					</div>
+					<div ng-show="formularioCadastro.login.$error.required && formularioCadastro.login.$dirty" class="alert alert-danger">
+						Preencha o campo login.
+					</div>
+					<div ng-show="formularioCadastro.login.$error.minlength && formularioCadastro.login.$dirty" class="alert alert-danger">
+						O campo login deve conter no mínimo 3 caracteres.
+					</div>
+					<div ng-show="formularioCadastro.senha.$error.required && formularioCadastro.senha.$dirty" class="alert alert-danger">
+						Preencha o campo senha.
+					</div>
+					<div ng-show="formularioCadastro.senha.$error.minlength && formularioCadastro.senha.$dirty" class="alert alert-danger">
+						O campo senha deve conter no mínimo 4 caracteres.
+					</div>
+					<div class="form-group">
+						<label for="nome" class="a-cor">Nome:</label>
+						<input type="text" class="campo" name="nome" id="nome" placeholder="Digite seu nome" ng-model="cadastro.nome" ng-Minlength="10" ng-required="true">
+					</div>
+					<div class="row">
+						<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+							<label for="cpf" class="a-cor">CPF:</label>
+							<input type="text" class="campo" name="cpf" id="cpf" placeholder="Digite seu cpf (Ex: 000.000.000-00)" ng-model="cadastro.cpf" ng-pattern="/^\d{3}\.\d{3}\.\d{3}-\d{1,3}$/" ng-required="true">
+						</div>
+						<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+							<label for="endereco" class="a-cor">Endereço:</label>
+							<input type="text" class="campo" name="endereco" id="endereco" placeholder="Digite seu endereço" ng-model="cadastro.endereco" ng-Minlength="8" ng-required="true">
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-lg-8 col-md-8 col-sm-6 col-xs-12">
+							<label for="cidade" class="a-cor">Cidade:</label>
+							<input type="text" class="campo" name="cidade" id="cidade" placeholder="Digite sua cidade" ng-model="cadastro.cidade" ng-Minlength="8" ng-required="true">
+						</div>
+						<div class="form-group col-lg-4 col-md-4 col-sm-6 col-xs-12">
+							<label for="cep" class="a-cor">CEP:</label>
+							<input type="text" class="campo" name="cep" id="cep" placeholder="Digite seu CEP (Ex: 0000-000)" ng-pattern="/^\d{5}-\d{3}$/" ng-model="cadastro.cep" ng-required="true">
+						</div>
+					</div>
+					<div class="row">
+						<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+							<label for="telefone" class="a-cor">Telefone:</label>
+							<input type="phone" class="campo" name="telefone" id="telefone" placeholder="Digite seu telefone (Ex: 00000-0000)" ng-model="cadastro.telefone" ng-pattern="/^\(\d{2}\) \d{5}-\d{4}$/" ng-required="true">
+						</div>
+						<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+							<label for="data" class="a-cor">Data de nascimento:</label>
+							<input type="date" class="campo" name="data" id="data" placeholder="Digite sua data de nascimento (Ex: 00/00/0000)" ng-model="cadastro.data" ng-required="true">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="email" class="a-cor">Email:</label>
+						<input type="email" class="campo" name="email" id="email" placeholder="Digite seu email" ng-model="cadastro.email" ng-required="true">
+					</div>
+					<div class="row">
+						<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+							<label for="login" class="a-cor">Login:</label>
+							<input type="text" class="campo" name="login" id="login" placeholder="Digite seu login" ng-model="cadastro.login" ng-Minlength="3" ng-required="true">
+						</div>
+						<div class="form-group col-lg-6 col-md-6 col-sm-6 col-xs-12">
+							<label for="senha" class="a-cor">Senha:</label>
+							<input type="password" class="campo" name="senha" id="senha" placeholder="Digite sua senha" ng-model="cadastro.senha" ng-Minlength="4" ng-required="true">
+						</div>
+					</div>
+					<button class="btn btn-success" type="submit" ng-disabled="formularioCadastro.$invalid">Enviar</button>
+				</form>
+			</div>
+		</div>
+	</div>

@@ -1,21 +1,21 @@
 @media (min-width: $screen-lg-min), (min-width: $screen-md-min) {
 	.lista-grupo {
 		& .lista-empresa {
-			@include calc-width("25% - 15px");
+			@include calc(width, "25% - 15px");
 		}
 	}
 }
 @media(max-width: $screen-lg-min) {
 	.lista-grupo {
 		& .lista-empresa {
-			@include calc-width("33.3333% - 15px");
+			@include calc(width, "33.3333% - 15px");
 		}
 	}
 }
 @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
 	.lista-grupo {
 		& .lista-empresa {
-			@include calc-width("50% - 15px");
+			@include calc(width, "50% - 15px");
 		}
 	}
 	#footer {
@@ -32,7 +32,27 @@
 	.logo {margin-top: 80px}
 	.lista-grupo {
 		& .lista-empresa {
-			@include calc-width("50% - 15px");
+			@include calc(width, "50% - 15px");
+		}
+	}
+	.formulario-cadastro {
+		& .form-group {
+			& > .campo {
+				&.campo-codigo, &.campo-numerico {max-width: 100%}
+			}
+		}
+	}
+	.login-base {
+		& > .login-base-texto {
+			text-align: center;
+			&.vale-presente {
+				& > .btn-success {
+					width: 100%;
+					margin-top: 5px;
+					margin-left: 0px;
+					left: 0px;
+				}
+			}
 		}
 	}
 	#footer {
@@ -48,7 +68,7 @@
 @media(max-width: 595px) {
 	.lista-grupo {
 		& .lista-empresa {
-			@include calc-width("100% - 15px");
+			@include calc(width, "100% - 15px");
 		}
 	}
 }

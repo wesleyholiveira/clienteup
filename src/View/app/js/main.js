@@ -1,6 +1,14 @@
-angular.module('clienteUp', []);
-angular.module('clienteUp').controller('BuscaController', ['$scope', '$filter', 'empresasAPI', function($scope, $filter, empresasAPI) {
-	$scope.matches = false;
+angular.module('clienteUp', ['ngRoute']);
+angular.module('clienteUp').controller('AutenticacaoClienteController', ['$rootScope', '$scope', '$location', function($rootScope, $scope, $location) {
+	
+	if($rootScope.logado === false)
+		$location.path('/sem-autorizacao');
+
+}]);
+angular.module('clienteUp').controller('BuscaController', ['$rootScope', '$filter', '$routeParams', 'jQueryFactory', function($rootScope, $filter, $routeParams, jQueryFactory) {
+	
+	$rootScope.matches = false;
+
 	var empresas = [
 		{
 			id: 1,
@@ -29,36 +37,353 @@ angular.module('clienteUp').controller('BuscaController', ['$scope', '$filter', 
 		{
 			id: 7,
 			nomeEmpresa: 'Maran Calçados'
+		},
+		{
+			id: 8,
+			nomeEmpresa: 'Manázius'
 		}
 	];
 
-	$scope.hasMatches = function() {
-		if(($scope.busca !== undefined) && $scope.busca.length > 3) {
-			$scope.empresas = $filter('filter')(empresas, $scope.busca);
-			$scope.matches = $scope.empresas.length;
+	if($routeParams.q !== undefined) {
+		$rootScope.busca = $routeParams.q;
+		$rootScope.hasMatches();
+	}
 
-			// empresasAPI.getEmpresas($scope.busca.toUpperCase())
-			// .success(function(data) {
-			// 	$scope.empresas = $filter('filter')(data.grupo, $scope.busca);
-			// 	$scope.matches = $scope.empresas.length;
-			// });
-		}else if($scope.busca === '') $scope.matches = false;
+	$rootScope.hasMatches = function() {
+		if(($rootScope.busca !== undefined) && $rootScope.busca.length > 3) {
+			$rootScope.empresas = $filter('filter')(empresas, $rootScope.busca);
+			$rootScope.matches = $rootScope.empresas.length;
+		}else if($rootScope.busca === '') $rootScope.matches = false;
+
+		$('html, body').animate({scrollTop: 0}, 500);
+
 	};
 
-	$scope.limparBusca = function() {
-		$scope.busca = '';
-		$scope.matches = false;
+	$rootScope.limparBusca = function() {
+		$rootScope.busca = '';
+		$rootScope.matches = false;
+		$rootScope.loader = false;
 	};
 
 }]);
-angular.module('clienteUp').factory('empresasAPI', ['$http', function($http) {
+angular.module('clienteUp').controller('CadastrarController', ['$rootScope', '$scope', '$location', '$timeout', '$filter', 'jQueryFactory', 'clienteAPI', 'cepAPI', function($rootScope, $scope, $location, $timeout, $filter, jQueryFactory, clienteAPI, cepAPI) {
+
+	var storage = $rootScope.storage;
+	$scope.status = undefined;
+	$('[name^="CPF"]').mask('000.000.000-00');
+	$('[name^="CEP"]').mask('00000-000');
+	$('[name^="telefone"]').mask('(00) 0000-0000D', {
+		translation: {
+			'D': {
+				pattern: /[0-9]/,
+				optional: true
+			}
+		}
+	});
+
+	$scope.buscarCEP = function(cep) {
+		cep = $filter('sanitize')(cep);
+		cepAPI.getInfos(cep).then(function(response) {
+			var resposta = response.data;
+			if(resposta.error !== true) {
+				$scope.cadastro.cidade = resposta.localidade;
+				$scope.cadastro.endereco = resposta.logradouro;
+			}else {
+				$scope.status = false;
+				$scope.mensagem = 'CEP não encontrado.';
+			}
+		});
+	};
+
+	$scope.cadastrar = function() {
+		clienteAPI.cadastrar($scope.cadastro)
+		.then(function(response) {
+
+			$scope.status = true;
+			$scope.mensagem = 'Cliente cadastrado com sucesso!';
+
+			clienteAPI.autenticar($scope.cadastro)
+			.then(function(response) {
+
+				var token = response.data.mensagem;
+				storage.setItem('acessoToken', token);
+				
+				$timeout(function() {
+
+					if(!token) {
+						$location.path('/sem-autorizacao');
+						return false;
+					}
+
+					$location.path('/cliente/pesquisa');
+
+				}, 1000);
+
+			});
+
+		}, function(response) {
+			$scope.status = false;
+			$scope.mensagem = response;
+		});
+
+		$('html, body').animate({scrollTop: 0}, 500);
+		
+	};
+
+}]);
+angular.module('clienteUp').controller('CuponsController', ['$scope', 'cupomAPI', 'paths', function($scope, cupomAPI, paths) {
+	
+	const imgDiretorio = paths.img + '/dist';
+
+	cupomAPI.listar().then(function(retorno) {
+		$scope.cupons = retorno.data;
+	}, function(err) {
+		console.log(err);
+	});
+
+}]);
+angular.module('clienteUp').controller('LoginController', ['$rootScope', '$scope', '$location', 'clienteAPI', function($rootScope, $scope, $location, clienteAPI) {
+	
+	var storage = sessionStorage;
+	$scope.status = undefined;
+
+	if($rootScope.logado === true)
+		$location.path('/cliente/meus-pontos');
+
+	$scope.enviar = function() {
+		
+		clienteAPI.autenticar($scope.login)
+		.then(function(response) {
+
+			$scope.status = undefined;
+
+			var token = response.data.mensagem;
+			var dadosCliente = response.data.cliente;
+
+			storage.setItem('acessoToken', token);
+			storage.setItem('dadosCliente', dadosCliente);
+
+			$rootScope.logado = true;
+			$rootScope.cliente = JSON.parse(dadosCliente);
+			$rootScope.cliente.senha = '';
+			$location.path('/cliente/meus-pontos');
+
+		}, function(response) {
+
+			$scope.status = false;
+			$rootScope.logado = false;
+			$scope.mensagem = response;
+			
+		});
+	};
+
+}]);
+angular.module('clienteUp').controller('MeusPontosController', ['$scope', function($scope) {
+
+	$scope.meusPontos = [];
+	
+}]);
+angular.module('clienteUp').controller('PesquisaController', ['$scope', '$timeout', 'clienteAPI', function($scope, $timeout, clienteAPI) {
+	
+	$scope.enviar = function() {
+		clienteAPI.cadastrarPesquisa($scope.pesquisa)
+		.then(function(response) {
+
+			$scope.status = true;
+			$scope.mensagem = 'Pesquisa realizada com sucesso!';
+
+		}, function(response) {
+
+			$scope.status = false;
+			$scope.mensagem = response;
+
+		});
+	}
+
+}]);
+angular.module('clienteUp').controller('PrincipalController', ['$rootScope', '$scope', '$location', 'jQueryFactory', function($rootScope, $scope, $location, jQueryFactory) {
+	
+	var padrao = 'Carregando...';
+	$rootScope.logado = sessionStorage.getItem('acessoToken') || false;
+	$rootScope.cliente = sessionStorage.getItem('dadosCliente') || false;
+
+	if($rootScope.cliente !== false) {
+		$rootScope.cliente = JSON.parse($rootScope.cliente);
+		$rootScope.cliente.senha = '';
+	}
+
+	$rootScope.loading = padrao;
+
+	$scope.topo = function() {
+		$('html, body').animate({scrollTop: 0}, 500);
+	};
+
+	$scope.limparLoader = function() {
+		$rootScope.loading = padrao;
+		$rootScope.loader = false;
+	};
+
+	$scope.sair = function() {
+		sessionStorage.setItem('acessoToken', '');
+		$rootScope.logado = false;
+		$rootScope.cliente = false;
+		$location.path('/');
+	};
+
+}]);
+const root = 'src/View/app';
+const baseUrl = window.location.origin;
+angular.module('clienteUp').constant('paths', {
+	root: root,
+	js: root + '/js',
+	css: root + '/css',
+	img: root + '/img',
+	templates: root + '/templates',
+	apiURL: 'http://localhost/clienteup/app.php'
+});
+angular.module('clienteUp').config(['$httpProvider', function($httpProvider) {
+
+	$httpProvider.interceptors.push('loaderInterceptor');
+
+}]);
+angular.module('clienteUp').config(['$routeProvider', '$locationProvider', 'paths', function($routeProvider, $locationProvider, paths) {
+
+	// $locationProvider.html5Mode({enabled: true,requireBase: true});
+	const templates = paths.templates + '/dist/';
+
+	$routeProvider
+		.when('/', {
+			templateUrl: templates + 'index.html'
+		}).when('/busca', {
+			templateUrl: templates + 'index.html',
+			controller: 'BuscaController'
+		}).when('/como-funciona', {
+			templateUrl: templates + 'como-funciona.html'
+		}).when('/cliente/meus-pontos', {
+			templateUrl: templates + 'meus-pontos.html'
+		}).when('/cliente/cadastrar', {
+			templateUrl: templates + 'cadastrar.html'
+		}).when('/cliente/login', {
+			templateUrl: templates + 'login.html'
+		}).when('/cliente/pesquisa', {
+			templateUrl: templates + 'pesquisa.html',
+		}).when('/cliente/pos-venda', {
+			templateUrl: templates + 'pos-venda.html'
+		}).when('/termos-de-uso', {
+			templateUrl: templates + 'termos-uso.html'
+		}).when('/brindes', {
+			templateUrl: templates + 'brindes.html'
+		}).when('/vale-presente', {
+			templateUrl: templates + 'vale-presente.html'
+		}).when('/sobre-nos', {
+			templateUrl: templates + 'sobre-nos.html'
+		}).when('/imprensa', {
+			templateUrl: templates + 'imprensa.html'
+		}).when('/sem-autorizacao', {
+			templateUrl: templates + 'sem-autorizacao.html'
+		}).when('/404', {
+			templateUrl: templates + '404.html'
+		}).otherwise({redirectTo: '/404'});
+
+}]);
+angular.module('clienteUp').factory('jQueryFactory', ['$window', function($window) {
+	return $window.$;
+}]);
+angular.module('clienteUp').filter('sanitize', function() {
+	
+	return function(input) {
+		return input.replace(/\D/g, '');
+	};
+
+});
+angular.module('clienteUp').factory('loaderInterceptor', ['$q', '$rootScope', '$httpParamSerializer', '$location', function($q, $rootScope, $httpParamSerializer, $location) {
 	return {
-		getEmpresas: function(empresa) {
-			return $http.get('http://localhost/financeiro/app.php/listarGrupos?busca='+ empresa);
+		request: function(config) {
+	
+			if(config.url.indexOf('clienteup') > 0) {
+				var pattern = /[cliente|empresa]/;
+				var path = $location.path();
+				path = path.split('/');
+
+				var pathSize = path.length;
+				var recurso = path[pathSize - 2];
+				var subRecurso = path[pathSize - 1];
+
+				if(recurso !== undefined) {
+					if(pattern.test(recurso) && (subRecurso !== 'login' && subRecurso !== '')) {
+						config.headers['X-Authorization'] = sessionStorage.getItem('acessoToken');
+					}
+				}
+			}
+
+			if(config.method === 'POST') {
+				config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+				config.transformRequest = function(data) {
+					return $httpParamSerializer(data);
+				};
+			}
+	
+			$rootScope.loader = true;
+			return config;
+		},
+		requestError: function(rejection) {
+			return $q.reject(rejection);
+		},
+		response: function(response) {
+			$rootScope.loader = false;
+			return response;
+		},
+		responseError: function(rejection) {
+			$rootScope.loader = false;
+
+			if(rejection.status === 403)
+				$location.path('/sem-autorizacao');
+			
+			if(rejection.status === 404)
+				$location.path('/404');
+
+			return $q.reject('Ocorreu um erro: ' + rejection.data.mensagem + ' [' + rejection.status + ']');
 		}
 	};
 }]);
+angular.module('clienteUp').factory('cepAPI', ['$http', 'paths', function($http, paths) {
 
+	const url = paths.apiURL;
+	return {
+	
+		getInfos: function(cep) {
+			return $http.get('https://viacep.com.br/ws/' + cep + '/json/', {cache: true});
+		}
+
+	};
+
+}]);
+angular.module('clienteUp').factory('clienteAPI', ['$http', 'paths', function($http, paths) {
+	
+	const url = paths.apiURL;
+	return {
+		cadastrar: function(dados) {
+			return $http.post(url + '/cliente', dados);
+		},
+		autenticar: function(dados) {
+			return $http.post(url + '/cliente/login', dados);
+		},
+		cadastrarPesquisa: function(dados) {
+			return $http.post(url + '/cliente/pesquisa', dados);
+		}
+	};
+
+}]);
+angular.module('clienteUp').factory('cupomAPI', ['$http', 'paths', function($http, paths) {
+	
+	const url = paths.apiURL;
+	return {
+		listar: function() {
+			return $http.get(url + '/cupom', {cache: true});
+		}
+	};
+
+}]);
 /* ========================================================================
  * Bootstrap: collapse.js v3.3.6
  * http://getbootstrap.com/javascript/#collapse

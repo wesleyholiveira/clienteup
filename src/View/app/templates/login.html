@@ -1,0 +1,33 @@
+<div class="container">
+	<div class="row">
+		<div class="col-lg-12">
+			<h1 class="a-cor">JÁ TENHO CADASTRO</h1>
+			<form name="formularioCadastro" class="formulario-cadastro" method="POST" ng-controller="LoginController" ng-submit="enviar()">
+				<div ng-show="formularioCadastro.login.$error.required && formularioCadastro.login.$dirty" class="alert alert-danger">
+					Preencha o campo usuário.
+				</div>
+				<div ng-show="formularioCadastro.login.$error.minlength && formularioCadastro.login.$dirty" class="alert alert-danger">
+					O campo usuário deve conter no mínimo 3 caracteres.
+				</div>
+				<div ng-show="formularioCadastro.senha.$error.required && formularioCadastro.senha.$dirty" class="alert alert-danger">
+					Preencha o campo senha.
+				</div>
+				<div ng-show="formularioCadastro.senha.$error.minlength && formularioCadastro.senha.$dirty" class="alert alert-danger">
+					O campo senha deve conter no mínimo 4 caracteres.
+				</div>
+				<div ng-class="{'alert-success': status, 'alert-danger': !status}" ng-show="status != undefined" class="alert">
+					{{mensagem}}
+				</div>
+				<div class="form-group">
+					<label for="login" class="a-cor">Usuário:</label>
+					<input type="text" class="campo" name="usuario" id="login" placeholder="Digite seu usuário" ng-model="login.usuario" ng-Minlength="3" ng-required="true" autocomplete="off">
+				</div>
+				<div class="form-group">
+					<label for="senha" class="a-cor">Senha:</label>
+					<input type="password" class="campo" name="senha" id="senha" placeholder="Digite sua senha" ng-model="login.senha" ng-Minlength="4" ng-required="true" autocomplete="off">
+				</div>
+				<button class="btn btn-success" type="submit" ng-disabled="formularioCadastro.$invalid">Entrar</button>
+			</form>
+		</div>
+	</div>
+</div>

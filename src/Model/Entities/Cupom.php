@@ -1,0 +1,63 @@
+<?php
+
+namespace ClienteUp\Model\Entities;
+
+use \Exception;
+use ClienteUp\Model\Entities\Empresa;
+
+/**
+	* @Entity @Table(name="cupom")
+**/
+
+class Cupom {
+	
+	/** @Id @Column(type="string", length=13, nullable=false) **/
+	private $codigo_cupom;
+	/** 
+		* @ManyToOne(targetEntity="ClienteUp\Model\Entities\Empresa", inversedBy="id_empresa")
+		* @JoinColumn(name="empresa", referencedColumnName="id_empresa")
+	 **/
+	private $empresa;
+	/** @Column(type="integer", nullable=false) **/
+	private $pontos_cupom;
+	/** @Column(type="string", length=100, nullable=false) **/
+	private $titulo_cupom;
+	/** @Column(type="string", length=255, nullable=false) **/
+	private $imagem_cupom;
+
+	public function getCodigo() : string
+	{
+		return $this->codigo_cupom;
+	}
+
+	public function setEmpresa(Empresa $empresa)
+	{
+		$this->empresa = $empresa;
+	}
+
+	public function getEmpresa() : Empresa
+	{
+		return $this->empresa;
+	}
+
+	public function setTitulo(string $titulo)
+	{
+		$this->titulo_cupom = $titulo;
+	}
+
+	public function getTitulo() : string
+	{
+		return $this->titulo_cupom;
+	}
+
+	public function setImagem(string $imagem)
+	{
+		$this->imagem_cupom = $imagem;
+	}
+
+	public function getImagem() : string
+	{
+		return $this->imagem_cupom;
+	}
+
+}

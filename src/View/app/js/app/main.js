@@ -1,1 +1,1 @@
-angular.module('clienteUp', []);
+angular.module('clienteUp', ['ngRoute']);

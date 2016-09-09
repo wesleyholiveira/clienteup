@@ -5,12 +5,12 @@
 	-o-border-radius: $border;
 	border-radius: $border;
 }
-@mixin calc-width($expressao) {
-	width: -webkit-calc(#{$expressao});
-	width: -moz-calc(#{$expressao});
-	width: -ms-calc(#{$expressao});
-	width: -o-calc(#{$expressao});
-	width: calc(#{$expressao});
+@mixin calc($propriedade, $valor) {
+	#{$propriedade}: -webkit-calc(#{$valor});
+	#{$propriedade}: -moz-calc(#{$valor});
+	#{$propriedade}: -ms-calc(#{$valor});
+	#{$propriedade}: -o-calc(#{$valor});
+	#{$propriedade}: calc(#{$valor});
 }
 
 .clearfix {@include clearfix}

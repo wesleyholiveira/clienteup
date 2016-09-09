@@ -58,13 +58,22 @@ gulp.task('devCSS', () => {
 
 gulp.task('minHTML', () => {
 	console.log('Minificando HTML');
-	return	gulp.src('../../index-dev.html')
+	return	gulp.src('../../../index-dev.html')
 			.pipe(htmlMin({collapseWhitespace: true}).on('error', (err) => console.log(err)))
 			.pipe(inline())
-			.pipe(concat('index2.html'))
+			.pipe(concat('index.html'))
 			.pipe(gulp.dest('../../../'))
 			.pipe(browserSync.reload({stream: true}));
 });
+
+gulp.task('minHTMLTemplates', () => {
+	console.log('Minificando HTML Templates');
+	return	gulp.src(['templates/*.html', '!templates/dist/*.html'])
+			.pipe(htmlMin({collapseWhitespace: true}).on('error', (err) => console.log(err)))
+			.pipe(inline())
+			.pipe(gulp.dest('./templates/dist'))
+			.pipe(browserSync.reload({stream: true}));
+});	
 
 gulp.task('minImg', () => {
 	console.log('Minificando Imagens');
@@ -79,7 +88,8 @@ gulp.task('minImg', () => {
 });
 
 gulp.task('watch', ['browserSync'], () => {
-	gulp.watch('../../../View/app/js/app/**/*.js', ['minJS', 'devJS']);
-	gulp.watch('../../../View/app/sass/**/**/*.scss', ['minCSS', 'devCSS']);
-	gulp.watch('../../../index-dev.html', ['minHTML'])
+	gulp.watch('js/app/**/*.js', ['minJS', 'devJS']);
+	gulp.watch('sass/app/**/**/*.scss', ['minCSS', 'devCSS']);
+	gulp.watch('../../../index-dev.html', ['minHTML']);
+	gulp.watch('./templates/*.html', ['minHTMLTemplates']);
 });
