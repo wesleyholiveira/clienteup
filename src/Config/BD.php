@@ -6,9 +6,9 @@ final class BD {
 
 	const DadosConexao = [
 			'driver' => 'pdo_mysql',
-		    'dbname' => 'clienteUp',
+		    'dbname' => 'clienteup',
 		    'user' => 'root',
-		    'password' => '',
+		    'password' => 'bolinha',
 		    'host' => 'localhost',
 		    'charset' => 'utf8'
 		];

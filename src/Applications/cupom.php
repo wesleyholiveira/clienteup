@@ -2,7 +2,6 @@
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use ClienteUp\Lib\JWT;
 use Silex\Application;
 

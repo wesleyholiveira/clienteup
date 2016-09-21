@@ -4,6 +4,7 @@ namespace ClienteUp\Model\Entities;
 
 use \Exception;
 use ClienteUp\Model\Entities\Empresa;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
 	* @Entity @Table(name="cupom")
@@ -24,6 +25,16 @@ class Cupom {
 	private $titulo_cupom;
 	/** @Column(type="string", length=255, nullable=false) **/
 	private $imagem_cupom;
+
+	/**
+     * @ManyToMany(targetEntity="ClienteUp\Model\Entities\Cliente", mappedBy="cliente")
+     **/
+	private $cliente;
+
+	public function __construct()
+	{
+		$this->cliente = new ArrayCollection();
+	}
 
 	public function getCodigo() : string
 	{

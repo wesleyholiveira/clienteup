@@ -1,4 +1,59 @@
 angular.module('clienteUp', ['ngRoute']);
+const root = 'src/View/app';
+const baseUrl = window.location.origin;
+angular.module('clienteUp').constant('paths', {
+	root: root,
+	js: root + '/js',
+	css: root + '/css',
+	img: root + '/img',
+	templates: root + '/templates',
+	apiURL: 'http://localhost/clienteup/app.php'
+});
+angular.module('clienteUp').config(['$httpProvider', function($httpProvider) {
+
+	$httpProvider.interceptors.push('loaderInterceptor');
+
+}]);
+angular.module('clienteUp').config(['$routeProvider', '$locationProvider', 'paths', function($routeProvider, $locationProvider, paths) {
+
+	// $locationProvider.html5Mode({enabled: true,requireBase: true});
+	const templates = paths.templates + '/dist/';
+
+	$routeProvider
+		.when('/', {
+			templateUrl: templates + 'index.html'
+		}).when('/busca', {
+			templateUrl: templates + 'index.html',
+			controller: 'BuscaController'
+		}).when('/como-funciona', {
+			templateUrl: templates + 'como-funciona.html'
+		}).when('/cliente/meus-pontos', {
+			templateUrl: templates + 'meus-pontos.html'
+		}).when('/cliente/cadastrar', {
+			templateUrl: templates + 'cadastrar.html'
+		}).when('/cliente/login', {
+			templateUrl: templates + 'login.html'
+		}).when('/cliente/pesquisa', {
+			templateUrl: templates + 'pesquisa.html',
+		}).when('/cliente/pos-venda', {
+			templateUrl: templates + 'pos-venda.html'
+		}).when('/termos-de-uso', {
+			templateUrl: templates + 'termos-uso.html'
+		}).when('/brindes', {
+			templateUrl: templates + 'brindes.html'
+		}).when('/vale-presente', {
+			templateUrl: templates + 'vale-presente.html'
+		}).when('/sobre-nos', {
+			templateUrl: templates + 'sobre-nos.html'
+		}).when('/imprensa', {
+			templateUrl: templates + 'imprensa.html'
+		}).when('/sem-autorizacao', {
+			templateUrl: templates + 'sem-autorizacao.html'
+		}).when('/404', {
+			templateUrl: templates + '404.html'
+		}).otherwise({redirectTo: '/404'});
+
+}]);
 angular.module('clienteUp').controller('AutenticacaoClienteController', ['$rootScope', '$scope', '$location', function($rootScope, $scope, $location) {
 	
 	if($rootScope.logado === false)
@@ -201,6 +256,24 @@ angular.module('clienteUp').controller('PesquisaController', ['$scope', '$timeou
 	}
 
 }]);
+angular.module('clienteUp').controller('PosUpController', ['$scope', '$timeout', 'clienteAPI', function($scope, $timeout, clienteAPI) {
+	
+	$scope.enviar = function() {
+		clienteAPI.cadastrarPosVenda($scope.posVenda)
+		.then(function(response) {
+
+			$scope.status = true;
+			$scope.mensagem = 'Pós Venda realizada com sucesso!';
+
+		}, function(response) {
+
+			$scope.status = false;
+			$scope.mensagem = response;
+
+		});
+	}
+
+}]);
 angular.module('clienteUp').controller('PrincipalController', ['$rootScope', '$scope', '$location', 'jQueryFactory', function($rootScope, $scope, $location, jQueryFactory) {
 	
 	var padrao = 'Carregando...';
@@ -231,64 +304,6 @@ angular.module('clienteUp').controller('PrincipalController', ['$rootScope', '$s
 	};
 
 }]);
-const root = 'src/View/app';
-const baseUrl = window.location.origin;
-angular.module('clienteUp').constant('paths', {
-	root: root,
-	js: root + '/js',
-	css: root + '/css',
-	img: root + '/img',
-	templates: root + '/templates',
-	apiURL: 'http://localhost/clienteup/app.php'
-});
-angular.module('clienteUp').config(['$httpProvider', function($httpProvider) {
-
-	$httpProvider.interceptors.push('loaderInterceptor');
-
-}]);
-angular.module('clienteUp').config(['$routeProvider', '$locationProvider', 'paths', function($routeProvider, $locationProvider, paths) {
-
-	// $locationProvider.html5Mode({enabled: true,requireBase: true});
-	const templates = paths.templates + '/dist/';
-
-	$routeProvider
-		.when('/', {
-			templateUrl: templates + 'index.html'
-		}).when('/busca', {
-			templateUrl: templates + 'index.html',
-			controller: 'BuscaController'
-		}).when('/como-funciona', {
-			templateUrl: templates + 'como-funciona.html'
-		}).when('/cliente/meus-pontos', {
-			templateUrl: templates + 'meus-pontos.html'
-		}).when('/cliente/cadastrar', {
-			templateUrl: templates + 'cadastrar.html'
-		}).when('/cliente/login', {
-			templateUrl: templates + 'login.html'
-		}).when('/cliente/pesquisa', {
-			templateUrl: templates + 'pesquisa.html',
-		}).when('/cliente/pos-venda', {
-			templateUrl: templates + 'pos-venda.html'
-		}).when('/termos-de-uso', {
-			templateUrl: templates + 'termos-uso.html'
-		}).when('/brindes', {
-			templateUrl: templates + 'brindes.html'
-		}).when('/vale-presente', {
-			templateUrl: templates + 'vale-presente.html'
-		}).when('/sobre-nos', {
-			templateUrl: templates + 'sobre-nos.html'
-		}).when('/imprensa', {
-			templateUrl: templates + 'imprensa.html'
-		}).when('/sem-autorizacao', {
-			templateUrl: templates + 'sem-autorizacao.html'
-		}).when('/404', {
-			templateUrl: templates + '404.html'
-		}).otherwise({redirectTo: '/404'});
-
-}]);
-angular.module('clienteUp').factory('jQueryFactory', ['$window', function($window) {
-	return $window.$;
-}]);
 angular.module('clienteUp').filter('sanitize', function() {
 	
 	return function(input) {
@@ -296,6 +311,9 @@ angular.module('clienteUp').filter('sanitize', function() {
 	};
 
 });
+angular.module('clienteUp').factory('jQueryFactory', ['$window', function($window) {
+	return $window.$;
+}]);
 angular.module('clienteUp').factory('loaderInterceptor', ['$q', '$rootScope', '$httpParamSerializer', '$location', function($q, $rootScope, $httpParamSerializer, $location) {
 	return {
 		request: function(config) {
@@ -370,6 +388,9 @@ angular.module('clienteUp').factory('clienteAPI', ['$http', 'paths', function($h
 		},
 		cadastrarPesquisa: function(dados) {
 			return $http.post(url + '/cliente/pesquisa', dados);
+		},
+		cadastrarPosVenda: function(dados) {
+			return $http.post(url + '/cliente/pos-venda', dados);
 		}
 	};
 

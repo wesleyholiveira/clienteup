@@ -89,3 +89,42 @@ $app->post('/cliente/pesquisa', function(Application $app, Request $req) use ($e
 	}
 
 });
+
+$app->post('/cliente/pos-venda', function(Application $app, Request $req) use ($em) {
+
+	$token = JWT::getToken($req->headers->get('x-authorization'));
+
+	$nomeVendedor = $req->get('nomeVendedor');
+	$codigo = $req->get('codigo');
+	$produtoLoja = $req->get('produtoLoja');
+	$interesse = (array)json_decode($req->get('interesse'));
+	$nota = $req->get('nota');
+	$perguntar = $req->get('perguntarNome');
+	$recomendar = $req->get('recomendar');
+	$cliente = unserialize($token->getClaim('Cliente'));
+	$cupom = $em->getRepository($app['cupomNamespace'])->findBy(array('codigo_cupom' => $codigo));
+	$codigoUtilizado = $em->getRepository($app['posUpNamespace'])->findBy(array('cupom' => $codigo));
+
+	if(count($cupom) < 1 || count($codigoUtilizado) > 0)
+		throw new Exception('Código inválido.');
+
+	foreach($interesse as $key => $opcao) {
+		if($opcao === true) {
+			$interesse[$key] = $key;
+		}
+	}
+
+	$posUp = $app['posUp'];
+	$posUp->setCupom($cupom[0]);
+	$posUp->setCliente($cliente);
+	$posUp->setProdutoLoja($produtoLoja);
+	$posUp->setAtendimento($nota);
+	$posUp->setOpcoes($interesse);
+	$posUp->setNomeVendedor($nomeVendedor);
+	$posUp->setPerguntarNome($perguntar);
+	$posUp->setRecomendar($recomendar);
+	$em->persist($posUp);
+	$em->flush();
+	return $app->json(['mensagem' => 'ok'], 200);
+
+});

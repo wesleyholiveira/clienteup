@@ -5,6 +5,7 @@ namespace ClienteUp\Model\Entities;
 use \Exception;
 use \DateTime;
 use Respect\Validation\Validator as v;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /** 
 	* @Entity(repositoryClass="ClienteUp\Model\Repositories\ClienteRepository")
@@ -13,27 +14,51 @@ use Respect\Validation\Validator as v;
 class Cliente {
 
 	/** @Id @Column(type="integer") @GeneratedValue **/
-	protected $id_cliente;
+	private $id_cliente;
 	/** @Column(type="string", length=80, nullable=false) **/
-	protected $nomeCompleto_cliente;
+	private $nomeCompleto_cliente;
 	/** @Column(type="string", length=100, nullable=false) **/
-	protected $endereco_cliente;
+	private $endereco_cliente;
 	/** @Column(type="string", length=90, nullable=false) **/
-	protected $cidade_cliente;
+	private $cidade_cliente;
 	/** @Column(type="string", length=14, nullable=false) **/
-	protected $cpf_cliente;
+	private $cpf_cliente;
 	/** @Column(type="string", length=14, nullable=false) **/
-	protected $cep_cliente;
+	private $cep_cliente;
 	/** @Column(type="string", length=14, nullable=false) **/
-	protected $telefone_cliente;
+	private $telefone_cliente;
 	/** @Column(type="date", nullable=false) **/
-	protected $dataNascimento_cliente;
+	private $dataNascimento_cliente;
 	/** @Column(type="string", length=255, unique=true, nullable=false) **/
-	protected $email_cliente;
+	private $email_cliente;
 	/** @Column(type="string", length=25, unique=true, nullable=false) **/
-	protected $usuario_cliente;
+	private $usuario_cliente;
 	/** @Column(type="string", length=64, nullable=false) **/
-	protected $senha_cliente;
+	private $senha_cliente;
+
+	/**
+     * @ManyToMany(targetEntity="ClienteUp\Model\Entities\Cupom")
+     * @JoinTable(name="cliente_cupom",
+     *      joinColumns={@JoinColumn(name="id_cliente", referencedColumnName="id_cliente")},
+     *      inverseJoinColumns={@JoinColumn(name="codigo_cupom", referencedColumnName="codigo_cupom")}
+     *      )
+ 	**/
+	private $cupom;
+
+	public function __construct()
+	{
+		$this->cupom = new ArrayCollection();
+	}
+
+	public function addCupom(Cupom $cupom)
+	{
+		$this->cupom[] = $cupom;
+	}
+
+	public function getCupom() : array
+	{
+		return $this->cupom->toArray();
+	}
 
 	public function getId() : int
 	{

@@ -10,6 +10,9 @@ angular.module('clienteUp').factory('clienteAPI', ['$http', 'paths', function($h
 		},
 		cadastrarPesquisa: function(dados) {
 			return $http.post(url + '/cliente/pesquisa', dados);
+		},
+		cadastrarPosVenda: function(dados) {
+			return $http.post(url + '/cliente/pos-venda', dados);
 		}
 	};
 
