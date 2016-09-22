@@ -30,11 +30,6 @@ class Empresa {
 		return $this->nome_empresa;
 	}
 
-	public function setFoto(string $fotoEmpresa)
-	{
-		$this->foto_empresa = $fotoEmpresa;
-	}
-
 	public function setCategoria(string $categoria)
 	{
 		$this->categoria_empresa = $categoria;

@@ -45,6 +45,11 @@ class Cliente {
  	**/
 	private $cupom;
 
+	/** 
+		* @OneToMany(targetEntity="ClienteUp\Model\Entities\PosUp", mappedBy="id_posUp")
+	**/
+	private $posUp;
+
 	public function __construct()
 	{
 		$this->cupom = new ArrayCollection();
@@ -55,7 +60,7 @@ class Cliente {
 		$this->cupom[] = $cupom;
 	}
 
-	public function getCupom() : array
+	public function getCupom()
 	{
 		return $this->cupom->toArray();
 	}

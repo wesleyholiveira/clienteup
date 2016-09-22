@@ -36,6 +36,11 @@ class Cupom {
 		$this->cliente = new ArrayCollection();
 	}
 
+	public function setCodigo(string $codigo)
+	{
+		$this->codigo_cupom = $codigo;
+	}
+
 	public function getCodigo() : string
 	{
 		return $this->codigo_cupom;
@@ -69,6 +74,16 @@ class Cupom {
 	public function getImagem() : string
 	{
 		return $this->imagem_cupom;
+	}
+
+	public function setPontos(int $pontos)
+	{
+		$this->pontos_cupom = $pontos;
+	}
+
+	public function getPontos() : int
+	{
+		return $this->pontos_cupom;
 	}
 
 }

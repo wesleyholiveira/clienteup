@@ -102,11 +102,8 @@ $app->post('/cliente/pos-venda', function(Application $app, Request $req) use ($
 	$perguntar = $req->get('perguntarNome');
 	$recomendar = $req->get('recomendar');
 	$cliente = unserialize($token->getClaim('Cliente'));
-	$cupom = $em->getRepository($app['cupomNamespace'])->findBy(array('codigo_cupom' => $codigo));
-	$codigoUtilizado = $em->getRepository($app['posUpNamespace'])->findBy(array('cupom' => $codigo));
 
-	if(count($cupom) < 1 || count($codigoUtilizado) > 0)
-		throw new Exception('Código inválido.');
+	return var_dump($cliente);
 
 	foreach($interesse as $key => $opcao) {
 		if($opcao === true) {
@@ -115,7 +112,6 @@ $app->post('/cliente/pos-venda', function(Application $app, Request $req) use ($
 	}
 
 	$posUp = $app['posUp'];
-	$posUp->setCupom($cupom[0]);
 	$posUp->setCliente($cliente);
 	$posUp->setProdutoLoja($produtoLoja);
 	$posUp->setAtendimento($nota);

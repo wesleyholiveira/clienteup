@@ -1,25 +1,39 @@
 <?php
 
 require_once 'vendor/autoload.php';
+require_once 'bootstrap.php';
 
-phpinfo();
+//$empresa = new ClienteUp\Model\Entities\Empresa();
+//$empresa->setNome('Manázius');
+//$empresa->setFoto('foto1.jpg');
+//$empresa->setCategoria('Informática');
 
-// use Lcobucci\JWT\Builder;
-// use Lcobucci\JWT\Signer\Hmac\Sha256;
+//$em->persist($empresa);
+//$em->flush();
 
-// $signer = new Sha256();
+$cliente = $em->find('ClienteUp\Model\Entities\Cliente', 1);
+$empresa = $em->find('ClienteUp\Model\Entities\Empresa', 1);
+$cupom = $em->find('ClienteUp\Model\Entities\Cupom', 'AAA123456AA04');
 
-// $token = (new Builder())->setIssuer('http://example.com') // Configures the issuer (iss claim)
-//                         ->setAudience('http://example.org') // Configures the audience (aud claim)
-//                         ->setIssuedAt(time()) // Configures the time that the token was issue (iat claim)
-//                         ->setNotBefore(time() + 60) // Configures the time that the token can be used (nbf claim)
-//                         ->setExpiration(time() + 3600) // Configures the expiration time of the token (nbf claim)
-//                         ->set('uid', 1) // Configures a new claim, called "uid"
-//                         ->set('username', 'wesley h  oliveira')
-//                         ->sign($signer, 'testing') // creates a signature using "testing" as key
-//                         ->getToken(); // Retrieves the generated token
+#$cupom = new ClienteUp\Model\Entities\Cupom();
+#$cupom->setCodigo('AAA123456AA05');
+#$cupom->setEmpresa($empresa);
+#$cupom->setPontos(10);
+#$cupom->setTitulo('Teste');
+#$cupom->setImagem('foto1.jpg');
+
+#$outroCliente = new ClienteUp\Model\Entities\Cliente();
+
+#$outroCliente->setNomeCompleto("Musha Hadaadas Da Silva MArcos Sauro");
 
 
-// var_dump($token->verify($signer, 'testing 1')); // false, because the key is different
-// var_dump($token->verify($signer, 'testing')); // true, because the key is the same
-// var_dump($token->getClaim('username'));
+#$outroCliente->addCupom($cupom);
+
+
+$posUp = new ClienteUp\Model\Entities\PosUp();
+$posUp->setCliente($cliente);
+
+#var_dump($posUp->getCliente());
+
+$em->persist($posUp);
+$em->flush();
